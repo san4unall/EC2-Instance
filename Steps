@@ -6,7 +6,12 @@ Step 2: Select the created volume, right click and select the “attach volume�
 
 Step 3: Select the instance from the instance text box.
 
-Step 4: Now, login to your ec2 instance and list the available disks using the following command - lsblk
+Step 4: Now, login to your ec2 instance and list the available disks using the following command 
+
+lsblk
+
+Use the lsblk command to view your available disk devices and their mount points (if applicable) 
+to help you determine the correct device name to use. The output of lsblk removes the /dev/ prefix from full device paths.
 
 Step 5: Check if the volume has any data using the following command.
 
@@ -60,3 +65,44 @@ If the above command shows no error, it means your fstab entry is good.
 Now, on every reboot the extra EBS volumes will get mounted automatically.
 
 That’s how you mount and unmount EBS volumes in your ec2 instances. 
+
+How to make the volume usable?
+
+Before actually using this additional disk, you need to type a few commands. If you have no idea about file system management, 
+simpliy copy and paste the following commands without thinking too much (adapted from AWS official guide)
+
+- Create a file system (only needed for newly-created volumes):
+
+$ sudo mkfs -t ext4 /dev/xvdf
+
+- Mount it to a new directory (use any directory name you like):
+
+$ mkdir new_disk
+
+Then you should see the /dev/xvdf file system is mounted on the /home/ubuntu/new_disk directory
+
+$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+udev            7.5G     0  7.5G   0% /dev
+tmpfs           1.5G  8.6M  1.5G   1% /run
+/dev/xvda1       68G   58G   11G  85% /
+tmpfs           7.5G     0  7.5G   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           7.5G     0  7.5G   0% /sys/fs/cgroup
+tmpfs           1.5G  4.0K  1.5G   1% /run/user/1000
+/dev/xvdf       197G   60M  187G   1% /home/ubuntu/new_disk
+
+By default, the new directory belongs to the root user. Change the ownership so you don’t need root permission to access it:
+
+$ sudo chown <newdirectorypath where volume is mounted>
+
+Test if you can write files into that new disk:
+
+$ touch new_disk/test_file
+[no error occurs]
+
+
+
+
+
+
