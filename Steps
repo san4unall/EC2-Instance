@@ -102,7 +102,40 @@ $ touch new_disk/test_file
 [no error occurs]
 
 
+How do I set or change the root password for my EC2 Linux instance?
+Issue
+I can connect to my EC2 instance running Linux through SSH using my private key, and I can run privileged commands using sudo, but my instance doesn't have a root password. How do I get one?
+Short Description
+For security purposes, it's a best practice to avoid root passwords. To get a temporary root password to complete a task, follow these steps:
 
+Grant a user root permissions, or assume root user permissions by running the sudo su command.
+Manually create a password for the root user.
+Complete the task.
+Delete the password for the root user.
+Resolution
+Before creating a temporary password, be sure you understand the following:
+
+By default, the sshd daemon is configured to refuse direct SSH connections by the root user. Avoid enabling direct SSH access for the root user. Instead, connect by using the user ID associated with your operating system, such as "ec2-user" for many Linux distributions, and a key pair.
+When you launch an EC2 instance running Linux, you associate an SSH key pair with it, and then you use the private key to authenticate and log in to the instance by using SSH. The default user name for the instance depends on the OS. For example, use “centos” for CentOS, “ubuntu” for Ubuntu Linux, and "ec2-user” for most other Linux distributions.
+After you log in using the user ID and password for your instance, you can run privileged commands using sudo as a prefix before each command, as shown in this example:
+$ sudo mount /dev/sdf1/localfolder
+To add a temporary password to a root user:
+
+1.    Connect to your EC2 instance running Linux by using SSH.
+
+2.    Assume root user permissions by running the following command:
+
+$ sudo su
+3.    Create a password for the root user by running the following command:
+
+# passwd root 
+4.    When prompted, enter your temporary root password, and then enter it again to confirm it.
+
+Note: You must run this command as the root user.
+
+After you complete the task, delete the root password by running the following command:
+
+# passwd –d root
 
 
 
