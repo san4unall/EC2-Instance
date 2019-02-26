@@ -1,0 +1,38 @@
+How To Attach And Mount An EBS Volume To EC2 Linux Instance?
+
+Step 1: Head over to EC2 –> Volumes and create a new volume of your preferred size and type.
+
+Step 2: Select the created volume, right click and select the “attach volume” option.
+
+Step 3: Select the instance from the instance text box.
+
+Step 4: Now, login to your ec2 instance and list the available disks using the following command - lsblk
+
+Step 5: Check if the volume has any data using the following command.
+
+sudo file -s /dev/xvdf
+
+If the above command output shows “/dev/xvdf: data”, it means your volume is empty.
+
+Step 6: Format the volume to ext4 filesystem  using the following command.
+
+sudo mkfs -t ext4 /dev/xvdf
+
+Step 7: Create a directory of your choice to mount our new ext4 volume. I am using the name “NewVolume”
+
+Step 8: Mount the volume to “newvolume” directory using the following command.
+
+sudo mount /dev/xvdf /NewVolume/
+
+Step 9: cd into newvolume directory and check the disk space for confirming the volume mount.
+
+cd /NewVolume
+df -h 
+
+The above command would show the free space in the newvolume directory.
+
+To unmount the volume, you have to use the following command.
+
+umount /dev/xvdf
+
+EBS Automount On Reboot
